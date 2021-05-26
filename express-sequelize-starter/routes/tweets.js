@@ -12,10 +12,24 @@ const tweetNotFoundError = (tweetId)=>{
     return error
 }
 
+const handleValidationErrors = (req, res, next) => {
+    const validationErrors = validationResult(req);
+
+    if (!validationErrors.isEmpty()) {
+        const errors = validationErrors.array().map(error => error.msg);
+        const err = Error('Bad request.');
+        err.errors = errors;
+        err.status = 404;
+        err.title = 'Bad request.';
+        return next(err);
+    }
+    next();
+}
+
 router.get("/", asyncHandler(async (req, res) => {
     const tweets = await Tweet.findAll();
     res.json({ tweets });
-  }));
+}));
 
 router.get("/:id(\\d+)", asyncHandler(async (req, res, next) => {
     const tweetId = req.params.id;
@@ -37,9 +51,10 @@ const userValidators = [
 ];
 
 
-router.post("/",asyncHandler(async(req,res)=>{
-    const validatorError = validationResult(req)
-}))
+router.post("/", handleValidationErrors, userValidators, asyncHandler(async(req,res)=>{
+    const { message } = req.body;
+    const newTweet = await Tweet.create({ message });
+}));
 
 
 
