@@ -64,7 +64,7 @@ router.put("/:id(\\d+)", tweetValidators, handleValidationErrors, asyncHandler(a
 
     if(tweet){
         console.log(tweet)
-        await tweet.update({message:tweet.dataValues.message})
+        await tweet.update({message:req.body.message}) //fixed
         res.json({tweet})
     }else{
         next(tweetNotFoundError(tweetId))
