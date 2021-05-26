@@ -43,19 +43,33 @@ router.get("/:id(\\d+)", asyncHandler(async (req, res, next) => {
     }
 }));
 
-const userValidators = [
+const tweetValidators = [
     check("message")
         .exists({checkFalsy:true})
         .withMessage("PLEASE PROVIDE A MESSAGE")
         .isLength({ max:280 })
+        .withMessage("Tweet CANNOT EXCEED 280 CHARACTERS")
 ];
 
 
-router.post("/", handleValidationErrors, userValidators, asyncHandler(async(req,res)=>{
+router.post("/", tweetValidators, handleValidationErrors, asyncHandler(async(req,res)=>{
     const { message } = req.body;
     const newTweet = await Tweet.create({ message });
+    res.json({ newTweet })
 }));
 
+router.put("/:id(\\d+)", tweetValidators, handleValidationErrors, asyncHandler(async(req, res)=>{
+    const tweetId = parseInt(req.params.id,10);
+    const tweet = await Tweet.findByPk(tweetId);
+
+    if(tweet){
+        console.log(tweet)
+        await tweet.update({message:tweet.dataValues.message})
+        res.json({tweet})
+    }else{
+        next(tweetNotFoundError(tweetId))
+    }
+}))
 
 
 
