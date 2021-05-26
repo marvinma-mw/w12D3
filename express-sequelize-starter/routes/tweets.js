@@ -11,7 +11,17 @@ router.get("/", asyncHandler(async (req, res) => {
     res.json({ tweets });
   }));
 
+router.get("/:id(\\d+)", asyncHandler(async (req, res, next) => {
+    const tweetId = req.params.id;
+    console.log(tweetId);
+    const tweet = await Tweet.findByPk(parseInt(tweetId, 10));
 
+    if (tweet) {
+        await res.json({ tweet });
+    } else {
+        //TODO
+    }
+}));
 
 
 
