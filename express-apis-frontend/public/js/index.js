@@ -14,6 +14,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch("http://localhost:8080/tweets");
+    if(res.status===401){
+     return res.redirect('/log-in')
+    }
     const { tweets } = await res.json();
     const tweetsContainer = document.querySelector("#tweets-container");
     const tweetsHtml = tweets.map(
