@@ -71,7 +71,17 @@ router.put("/:id(\\d+)", tweetValidators, handleValidationErrors, asyncHandler(a
     }
 }))
 
+router.delete('/:id(\\d+)', asyncHandler(async (req, res, next) => {
+    const tweetId = parseInt(req.params.id);
+    const tweet = await Tweet.findByPk(tweetId);
 
+    if (tweet) {
+        await tweet.destroy();
+        res.status(204).end();
+    } else {
+        next(tweetNotFoundError(tweetId));
+    }
+}));
 
 
 
