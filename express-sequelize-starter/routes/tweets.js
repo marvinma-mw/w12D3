@@ -39,10 +39,14 @@ const tweetValidators = [
 ];
 
 
-router.post("/", tweetValidators, handleValidationErrors, asyncHandler(async(req,res)=>{
-    const { message } = req.body;
-    const newTweet = await Tweet.create({ message });
-    res.json({ newTweet })
+router.post(
+    "/",
+    tweetValidators,
+    handleValidationErrors,
+    asyncHandler(async(req,res)=>{
+        const { message } = req.body;
+        const newTweet = await Tweet.create({ message });
+        res.json({ newTweet })
 }));
 
 router.put("/:id(\\d+)", tweetValidators, handleValidationErrors, asyncHandler(async(req, res)=>{
